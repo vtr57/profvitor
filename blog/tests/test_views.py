@@ -1,7 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
 
 from ..models import Post
 
@@ -97,3 +99,79 @@ class PostDetailViewTests(TestCase):
         """
         response = self.client.get(reverse('post_detail', args=[999]))
         self.assertEqual(response.status_code, 404)
+
+
+class AuthViewsTest(TestCase):
+
+    def setUp(self):
+        """
+        Set up the test environment.
+        Create a test user and initialize the client.
+        """
+        self.username = 'testuser'
+        self.password = 'testpassword'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.client = Client()
+
+    def test_login_view_get(self):
+        """
+        Test the GET request to the login view.
+        It should return a 200 status code and render the login template.
+        """
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/login.html')
+
+    def test_login_view_post_valid(self):
+        """
+        Test the POST request to the login view with valid credentials.
+        It should log the user in and redirect to the 'painel' page.
+        """
+        response = self.client.post(reverse('login'), {
+            'username': self.username,
+            'password': self.password
+        })
+        self.assertRedirects(response, reverse('painel'))
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_login_view_post_invalid(self):
+        """
+        Test the POST request to the login view with invalid credentials.
+        It should return a 200 status code and render the login template with an error.
+        """
+        response = self.client.post(reverse('login'), {
+            'username': self.username,
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/login.html')
+        self.assertContains(response, 'Usuário ou Senha inválidas')
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_painel_view_authenticated(self):
+        """
+        Test the GET request to the painel view for an authenticated user.
+        It should return a 200 status code and render the painel template.
+        """
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse('painel'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/painel.html')
+
+    def test_painel_view_unauthenticated(self):
+        """
+        Test the GET request to the painel view for an unauthenticated user.
+        It should redirect the user to the login page.
+        """
+        response = self.client.get(reverse('painel'))
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('painel')}")
+
+    def test_logout_view(self):
+        """
+        Test the GET request to the logout view.
+        It should log the user out and redirect to the login page.
+        """
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse('logout'))
+        self.assertRedirects(response, reverse('login'))
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
