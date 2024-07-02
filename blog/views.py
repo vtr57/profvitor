@@ -1,5 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.utils import timezone
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
+
 from .models import Post
 from .forms import PostForm
 
@@ -12,5 +16,23 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
-def post_new(request):
-    ...
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('painel')
+        else:
+            return render(request, 'blog/login.html', {'error': 'Usuário ou Senha inválidas'})
+    return render(request, 'blog/login.html')
+
+@login_required
+def painel_view(request):
+    return render(request, 'blog/painel.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
