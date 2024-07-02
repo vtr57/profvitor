@@ -7,7 +7,7 @@
         </div>
     {% endif %}
     <h2>{{ post.titulo }}</h2>
-    <p>{{ post.texto|linebreaksbr }}</p>
+    <p>{{ post.texto.html|safe}}</p>
 </div>
 {% endblock content %}
 

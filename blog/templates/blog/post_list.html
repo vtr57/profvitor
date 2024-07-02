@@ -6,7 +6,7 @@
       <p>publicado em: {{ post.publicado_em }}</p>
     </div>
     <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.titulo }}</a></h2>
-    <p>{{ post.texto|truncatewords:20 }}</p>
+    <p>{{ post.texto.html|truncatewords_html:20|safe}}</p>
   </div>
 {% endfor %}
   </div>
