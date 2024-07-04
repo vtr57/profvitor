@@ -49,7 +49,7 @@ def criar_post(request):
             return HttpResponse(f"Post criado com sucesso: {post.titulo}")
     else:
         form = PostFormCriar()
-    return render(request, 'blog/criar.html')
+    return render(request, 'blog/criar.html', {'form': form})
 
 @login_required
 def editar(request):
