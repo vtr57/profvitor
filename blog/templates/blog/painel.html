@@ -11,15 +11,16 @@
     </div>
     <div class="row">
         <div class="col">
-            <p>Você está logado como {{ request.user.username }}</p>
+            <p class="text-secondary">Você está logado como {{ request.user.username }}</p>
         </div>
     </div>
-    <ul class="nav nav-tabs">
+
+    <ul class="nav justify-content-center">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'post_edit' %}">Editor</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'criar_post'%}">Criar</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="{% url 'editar'%}">Editar</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -28,5 +29,12 @@
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
     </ul>
+
+    {%block criar_post%}
+    {%endblock%}
+    
+    {%block editar%}
+    {%endblock%}
+
 </div>
 {% endblock content %}

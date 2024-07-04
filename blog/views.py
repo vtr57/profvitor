@@ -37,5 +37,10 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def post_edit(request):
-    return render(request, 'post_edit.html')
+@login_required
+def criar_post(request):
+    return render(request, 'blog/criar_post.html')
+
+@login_required
+def editar(request):
+    return render(request, 'blog/editar.html')
