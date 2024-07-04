@@ -1,4 +1,6 @@
 {% extends "blog/base.html" %}
+
+{% load static %}
 {% block content %}
 <div class="container-sm">
     <div class="row">
@@ -23,18 +25,22 @@
             <a class="nav-link" href="{% url 'editar'%}">Editar</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="{% url 'deletar'%}">Deletar</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
     </ul>
 
-    {%block criar_post%}
+    {%block criar%}
     {%endblock%}
     
     {%block editar%}
     {%endblock%}
+    
+    {%block deletar%}
+    {%endblock%}
+
 
 </div>
 {% endblock content %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .models import Post
-from .forms import PostForm
+from .forms import PostFormCriar
 
 
 def post_list(request):
@@ -39,8 +39,22 @@ def logout_view(request):
 
 @login_required
 def criar_post(request):
-    return render(request, 'blog/criar_post.html')
+    if request.method == 'POST':
+        form = PostFormCriar(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.autor = request.user
+            post.titulo = "titulo do post criado no quill js"
+            post.save()
+            return HttpResponse(f"Post criado com sucesso: {post.titulo}")
+    else:
+        form = PostFormCriar()
+    return render(request, 'blog/criar.html')
 
 @login_required
 def editar(request):
     return render(request, 'blog/editar.html')
+
+@login_required
+def deletar(request):
+    return render(request, 'blog/deletar.html')
