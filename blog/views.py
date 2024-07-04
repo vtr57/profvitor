@@ -36,3 +36,6 @@ def painel_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def post_edit(request):
+    return render(request, 'post_edit.html')

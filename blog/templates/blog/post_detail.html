@@ -1,12 +1,12 @@
 {% extends "blog/base.html" %}
 {% block content %}
-<div class="post">
+<div class="container-sm mt-3">
     {% if post.publicado_em %}
-        <div class="date">
-            {{ post.publicado_em }}
+        <div class="text-secondary">
+            <p>Publicado em: {{ post.publicado_em }}</p>
         </div>
     {% endif %}
-    <h2>{{ post.titulo }}</h2>
+    <h1>{{ post.titulo }}</h2>
     <p>{{ post.texto.html|safe}}</p>
 </div>
 {% endblock content %}

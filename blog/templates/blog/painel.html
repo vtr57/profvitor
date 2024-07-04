@@ -1,6 +1,32 @@
 {% extends "blog/base.html" %}
 {% block content %}
-<h2>Bem-vindo ao Painel</h2>
-<p>Você está logado como {{ request.user.username }}</p>
-<a href="{% url 'logout' %}">Logout</a>
+<div class="container-sm">
+    <div class="row">
+        <div class="col-10">
+            <h2>Bem-vindo ao Painel</h2>
+        </div>
+        <div class="col-2">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Você está logado como {{ request.user.username }}</p>
+        </div>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'post_edit' %}">Editor</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+</div>
 {% endblock content %}
