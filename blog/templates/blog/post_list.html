@@ -1,23 +1,24 @@
-{% extends "blog/base.html" %}
+{% extends "blog/home.html" %}
 
 {% load static %}
 {% block content%}
 {% for post in posts %}
 
-  <div class="card mb-3" style="max-width: 540px;">
+  <div class="card mb-3 mt-5 mx-3" >
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="{% static "img/logo.png" %}" class="img-fluid rounded-start" alt="...">
+        <img src="{% static "img/car2.jpg" %}" class="img-fluid rounded-start" alt="...">
       </div>
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title"><a href="{% url 'post_detail' pk=post.pk %}">{{ post.titulo }}</a></h5>
           <p class="card-text">{{ post.texto.html|truncatewords_html:20|safe}}</p>
-          <p class="card-text"><small class="text-muted">publicado em {{ post.publicado_em }}</small></p>
+          <p class="card-text"><small class="text-muted">Publicado em {{ post.publicado_em }}</small></p>
         </div>
       </div>
     </div>
   </div>
+
 {% endfor %}
   </div>
 </div>

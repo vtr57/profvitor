@@ -9,7 +9,7 @@ from .forms import PostForm
 
 
 def post_list(request):
-    posts = Post.objects.filter(publicado_em__lte=timezone.now()).order_by('publicado_em') 
+    posts = Post.objects.filter(publicado_em__lte=timezone.now()).order_by('-publicado_em')
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
