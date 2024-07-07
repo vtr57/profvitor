@@ -1,6 +1,6 @@
 {% extends "blog/base.html" %}
-{% block content %}
 
+{% block content %}
 <div class="container-sm mt-3">
     {% if post.publicado_em %}
         <div class="text-secondary">
@@ -8,7 +8,20 @@
         </div>
     {% endif %}
     <h1>{{ post.titulo }}</h1>
-    {{ post.texto|safe}}
+    <div class="ql-snow">
+        <div class="ql-editor">
+            {{ post.texto|safe }}
+        </div>
+    </div>
 </div>
 {% endblock content %}
 
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
+    });
+</script>
+{% endblock %}

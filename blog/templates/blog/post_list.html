@@ -13,7 +13,7 @@
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title"><a href="{% url 'post_detail' pk=post.pk %}">{{ post.titulo }}</a></h5>
-          <p class="card-text">{{ post.texto|truncatewords_html:20|safe}}</p>
+          <p class="card-text">{{ post.texto|truncatewords_html:10|safe}}</p>
           <p class="card-text"><small class="text-muted">Publicado em {{ post.publicado_em }}</small></p>
         </div>
       </div>
