@@ -2,23 +2,10 @@
 
 {%block criar%}
 
-
-
-<link href="/styles.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
-
 <div id="toolbar-container">
   <span class="ql-formats">
     <select class="ql-font"></select>
-    <select class="ql-size"></select>
+    {% comment %} <select class="ql-size"></select> {% endcomment %}
   </span>
   <span class="ql-formats">
     <button class="ql-bold"></button>
@@ -35,8 +22,9 @@
     <button class="ql-script" value="super"></button>
   </span>
   <span class="ql-formats">
-    <button class="ql-header" value="1"></button>
+    {% comment %} <button class="ql-header" value="1"></button> {% endcomment %}
     <button class="ql-header" value="2"></button>
+    <button class="ql-header" value="3"></button>
     <button class="ql-blockquote"></button>
     <button class="ql-code-block"></button>
   </span>
@@ -61,34 +49,37 @@
   </span>
 </div>
 
-<div id="editor"></div>
 <form id="post-form" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="row">
-      <div class="col-sm-9"></div>
-      <div class="col-sm-3 mt-3">
-        <button class="btn btn-success" type="submit" id="criar">Criar Post</button>
-      </div>
-    </div>
+  <br>
+  <label for="titulo" class="form-label">Título:</label>
+  <input type="text" class="form-control" id="titulo" name="titulo">
+<div id="editor"></div>
+{% csrf_token %}
+{{ form.as_p }}
+<div class="row">
+  <div class="col-sm-9"></div>
+  <div class="col-sm-3 mt-3">
+    <button class="btn btn-success" type="submit" id="criar">Criar Post</button>
+  </div>
+</div>
 </form>
 
-    <!-- Initialize Quill editor -->
-    <script>
-        const quill = new Quill('#editor', {
-            modules: {
-                syntax: true,
-                toolbar: '#toolbar-container',
-            },
-            placeholder: 'Compose an epic...',
-            theme: 'snow',
-        });
+<!-- Initialize Quill editor -->
+<script>
+    const quill = new Quill('#editor', {
+        modules: {
+            syntax: true,
+            toolbar: '#toolbar-container',
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow',
+    });
 
-        document.getElementById('post-form').onsubmit = function() {
-            // Captura o conteúdo HTML do editor
-            const quillHtml = quill.getSemanticHTML();
-            // Define o valor do campo oculto do formulário com o HTML do Quill
-            document.querySelector('input[name="texto"]').value = quillHtml;
-        };
-    </script>
+    document.getElementById('post-form').onsubmit = function() {
+        // Captura o conteúdo HTML do editor
+        const quillHtml = quill.getSemanticHTML();
+        // Define o valor do campo oculto do formulário com o HTML do Quill
+        document.querySelector('input[name="texto"]').value = quillHtml;
+    };
+</script>
 {%endblock%}

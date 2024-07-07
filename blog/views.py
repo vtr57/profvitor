@@ -47,7 +47,7 @@ def criar_post(request):
             post = form.save(commit=False)
             post.autor = request.user
             post.publicado_em = timezone.now()
-            post.titulo = "titulo criado na view"
+            post.titulo = request.POST.get('titulo', 'Sem Título')
             post.save()
             return redirect('post_list')  # Redirecione para a lista de posts após a criação
     else:
