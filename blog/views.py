@@ -56,7 +56,8 @@ def criar_post(request):
 
 @login_required
 def editar(request):
-    return render(request, 'blog/editar.html')
+    posts = Post.objects.all().order_by('-publicado_em')
+    return render(request, 'blog/editar.html', {'posts': posts})
 
 @login_required
 def deletar(request):

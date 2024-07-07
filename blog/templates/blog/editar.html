@@ -1,6 +1,20 @@
 {% extends "blog/painel.html" %}
 
 {%block editar%}
+
+{% comment %} selecionar posts a partir do titulo {% endcomment %}
+<div class="container mt-3">
+  <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          Selecionar Post para Editar
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {% for post in posts %}
+              <li><a class="dropdown-item" href="#" data-id="{{ post.pk }}" data-titulo="{{ post.titulo }}" data-texto="{{ post.texto }}">{{ post.titulo }}</a></li>
+          {% endfor %}
+      </ul>
+  </div>
+
 <div id="toolbar-container">
   <span class="ql-formats">
     <select class="ql-font"></select>
@@ -52,33 +66,50 @@
   <br>
   <label for="titulo" class="form-label">Título:</label>
   <input type="text" class="form-control" id="titulo" name="titulo">
-<div id="editor"></div>
-{% csrf_token %}
-{{ form.as_p }}
-<div class="row">
-  <div class="col-sm-9"></div>
-  <div class="col-sm-3 mt-3">
-    <button class="btn btn-success" type="submit" id="criar">Criar Post</button>
+  <div id="editor"></div>
+  <input type="hidden" name="texto" id="texto">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="row">
+      <div class="col-sm-9"></div>
+      <div class="col-sm-3 mt-3">
+          <button class="btn btn-success" type="submit" id="criar">Editar Post</button>
+      </div>
   </div>
-</div>
 </form>
+</div>
 
 <!-- Initialize Quill editor -->
 <script>
-    const quill = new Quill('#editor', {
-        modules: {
-            syntax: true,
-            toolbar: '#toolbar-container',
-        },
-        placeholder: 'Compose an epic...',
-        theme: 'snow',
-    });
+  document.addEventListener('DOMContentLoaded', function() {
+      const quill = new Quill('#editor', {
+          modules: {
+              syntax: true,
+              toolbar: '#toolbar-container',
+          },
+          placeholder: 'Compose an epic...',
+          theme: 'snow',
+      });
 
-    document.getElementById('post-form').onsubmit = function() {
-        // Captura o conteúdo HTML do editor
-        const quillHtml = quill.getSemanticHTML();
-        // Define o valor do campo oculto do formulário com o HTML do Quill
-        document.querySelector('input[name="texto"]').value = quillHtml;
-    };
+      // Quando um item do dropdown for clicado
+      document.querySelectorAll('.dropdown-item').forEach(function(item) {
+          item.addEventListener('click', function(event) {
+              event.preventDefault();
+              const titulo = this.getAttribute('data-titulo');
+              const texto = this.getAttribute('data-texto');
+              // Preenche o campo título
+              document.getElementById('titulo').value = titulo;
+              // Preenche o editor Quill
+              quill.clipboard.dangerouslyPasteHTML(texto);
+          });
+      });
+
+      document.getElementById('post-form').onsubmit = function() {
+          // Captura o conteúdo HTML do editor
+          const quillHtml = quill.root.innerHTML;
+          // Define o valor do campo oculto do formulário com o HTML do Quill
+          document.getElementById('texto').value = quillHtml;
+      };
+  });
 </script>
 {%endblock%}
