@@ -2,10 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.utils import timezone
 
 
 from .models import Post
-from .forms import PostFormCriar
+from .forms import PostForm
 
 
 def post_list(request):
@@ -40,15 +42,16 @@ def logout_view(request):
 @login_required
 def criar_post(request):
     if request.method == 'POST':
-        form = PostFormCriar(request.POST)
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.autor = request.user
-            post.titulo = "titulo do post criado no quill js"
+            post.publicado_em = timezone.now()
+            post.titulo = "titulo criado na view"
             post.save()
-            return HttpResponse(f"Post criado com sucesso: {post.titulo}")
+            return redirect('post_list')  # Redirecione para a lista de posts após a criação
     else:
-        form = PostFormCriar()
+        form = PostForm()
     return render(request, 'blog/criar.html', {'form': form})
 
 @login_required
