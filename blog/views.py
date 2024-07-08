@@ -72,6 +72,7 @@ def editar(request):
 
     return render(request, 'blog/editar.html', {'posts': posts, 'form': form})
 
+
 @login_required
 def deletar(request):
     return render(request, 'blog/deletar.html')

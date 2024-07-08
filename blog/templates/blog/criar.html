@@ -52,7 +52,7 @@
 <form id="post-form" method="post">
   <br>
   <label for="titulo" class="form-label" >Título:</label>
-  <input type="text" class="form-control" id="titulo" name="titulo" required>
+  <input type="text" class="form-control" id="titulo" required>
 <div id="editor" required></div>
 {% csrf_token %}
 {{ form.as_p }}
@@ -78,8 +78,10 @@
     document.getElementById('post-form').onsubmit = function() {
         // Captura o conteúdo HTML do editor
         const quillHtml = quill.getSemanticHTML();
+        const titulo = document.getElementById('titulo').value;
         // Define o valor do campo oculto do formulário com o HTML do Quill
         document.querySelector('input[name="texto"]').value = quillHtml;
+        document.querySelector('input[name="titulo"]').value = titulo;
     };
 </script>
 {%endblock%}
