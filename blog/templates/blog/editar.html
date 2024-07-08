@@ -1,8 +1,6 @@
 {% extends "blog/painel.html" %}
 
-{%block editar%}
-
-{% comment %} selecionar posts a partir do titulo {% endcomment %}
+{% block editar %}
 <div class="container mt-3">
   <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -10,73 +8,73 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {% for post in posts %}
-              <li><a class="dropdown-item" href="#" data-id="{{ post.pk }}" data-titulo="{{ post.titulo }}" data-texto="{{ post.texto }}">{{ post.titulo }}</a></li>
+              <li><a class="dropdown-item" href="#" data-id="{{ post.pk }}" data-titulo="{{ post.titulo }}" data-texto="{{ post.texto|escape }}">{{ post.titulo }}</a></li>
           {% endfor %}
       </ul>
   </div>
 
-<div id="toolbar-container">
-  <span class="ql-formats">
-    <select class="ql-font"></select>
-    {% comment %} <select class="ql-size"></select> {% endcomment %}
-  </span>
-  <span class="ql-formats">
-    <button class="ql-bold"></button>
-    <button class="ql-italic"></button>
-    <button class="ql-underline"></button>
-    <button class="ql-strike"></button>
-  </span>
-  <span class="ql-formats">
-    <select class="ql-color"></select>
-    <select class="ql-background"></select>
-  </span>
-  <span class="ql-formats">
-    <button class="ql-script" value="sub"></button>
-    <button class="ql-script" value="super"></button>
-  </span>
-  <span class="ql-formats">
-    {% comment %} <button class="ql-header" value="1"></button> {% endcomment %}
-    <button class="ql-header" value="2"></button>
-    <button class="ql-header" value="3"></button>
-    <button class="ql-blockquote"></button>
-    <button class="ql-code-block"></button>
-  </span>
-  <span class="ql-formats">
-    <button class="ql-list" value="ordered"></button>
-    <button class="ql-list" value="bullet"></button>
-    <button class="ql-indent" value="-1"></button>
-    <button class="ql-indent" value="+1"></button>
-  </span>
-  <span class="ql-formats">
-    <button class="ql-direction" value="rtl"></button>
-    <select class="ql-align"></select>
-  </span>
-  <span class="ql-formats">
-    <button class="ql-link"></button>
-    <button class="ql-image"></button>
-    <button class="ql-video"></button>
-    <button class="ql-formula"></button>
-  </span>
-  <span class="ql-formats">
-    <button class="ql-clean"></button>
-  </span>
-</div>
-
-<form id="post-form" method="post">
-  <br>
-  <label for="titulo" class="form-label">Título:</label>
-  <input type="text" class="form-control" id="titulo" name="titulo">
-  <div id="editor"></div>
-  <input type="hidden" name="texto" id="texto">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <div class="row">
-      <div class="col-sm-9"></div>
-      <div class="col-sm-3 mt-3">
-          <button class="btn btn-success" type="submit" id="criar">Editar Post</button>
-      </div>
+  <div id="toolbar-container">
+      <span class="ql-formats">
+        <select class="ql-font"></select>
+        {% comment %} <select class="ql-size"></select> {% endcomment %}
+      </span>
+      <span class="ql-formats">
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-underline"></button>
+        <button class="ql-strike"></button>
+      </span>
+      <span class="ql-formats">
+        <select class="ql-color"></select>
+        <select class="ql-background"></select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-script" value="sub"></button>
+        <button class="ql-script" value="super"></button>
+      </span>
+      <span class="ql-formats">
+        {% comment %} <button class="ql-header" value="1"></button> {% endcomment %}
+        <button class="ql-header" value="2"></button>
+        <button class="ql-header" value="3"></button>
+        <button class="ql-blockquote"></button>
+        <button class="ql-code-block"></button>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-indent" value="-1"></button>
+        <button class="ql-indent" value="+1"></button>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-direction" value="rtl"></button>
+        <select class="ql-align"></select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-link"></button>
+        <button class="ql-image"></button>
+        <button class="ql-video"></button>
+        <button class="ql-formula"></button>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-clean"></button>
+      </span>
   </div>
-</form>
+
+  <form id="post-form" method="post">
+      <br>
+      <label for="titulo" class="form-label">Título:</label>
+      <input type="text" class="form-control" id="titulo" name="titulo">
+      <div id="editor"></div>
+      <input type="hidden" name="post_id" id="post_id">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="row">
+          <div class="col-sm-9"></div>
+          <div class="col-sm-3 mt-3">
+              <button class="btn btn-success" type="submit" id="criar">Editar Post</button>
+          </div>
+      </div>
+  </form>
 </div>
 
 <!-- Initialize Quill editor -->
@@ -95,21 +93,24 @@
       document.querySelectorAll('.dropdown-item').forEach(function(item) {
           item.addEventListener('click', function(event) {
               event.preventDefault();
+              const id = this.getAttribute('data-id');
               const titulo = this.getAttribute('data-titulo');
               const texto = this.getAttribute('data-texto');
               // Preenche o campo título
               document.getElementById('titulo').value = titulo;
               // Preenche o editor Quill
               quill.clipboard.dangerouslyPasteHTML(texto);
+              // Define o valor do campo oculto com o ID do post
+              document.getElementById('post_id').value = id;
           });
       });
 
       document.getElementById('post-form').onsubmit = function() {
           // Captura o conteúdo HTML do editor
-          const quillHtml = quill.root.innerHTML;
+          const quillHtml = quill.getSemanticHTML();
           // Define o valor do campo oculto do formulário com o HTML do Quill
-          document.getElementById('texto').value = quillHtml;
+          document.querySelector('input[name="texto"]').value = quillHtml;
       };
   });
 </script>
-{%endblock%}
+{% endblock %}

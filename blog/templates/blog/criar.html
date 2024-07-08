@@ -51,9 +51,9 @@
 
 <form id="post-form" method="post">
   <br>
-  <label for="titulo" class="form-label">Título:</label>
-  <input type="text" class="form-control" id="titulo" name="titulo">
-<div id="editor"></div>
+  <label for="titulo" class="form-label" >Título:</label>
+  <input type="text" class="form-control" id="titulo" name="titulo" required>
+<div id="editor" required></div>
 {% csrf_token %}
 {{ form.as_p }}
 <div class="row">

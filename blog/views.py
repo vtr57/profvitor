@@ -57,7 +57,20 @@ def criar_post(request):
 @login_required
 def editar(request):
     posts = Post.objects.all().order_by('-publicado_em')
-    return render(request, 'blog/editar.html', {'posts': posts})
+
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post = get_object_or_404(Post, pk=post_id)
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.publicado_em = timezone.now()  # Atualiza a data de publicação
+            post.save()
+            return redirect('post_list')  # Redireciona para a lista de posts após a edição
+    else:
+        form = PostForm()
+
+    return render(request, 'blog/editar.html', {'posts': posts, 'form': form})
 
 @login_required
 def deletar(request):
