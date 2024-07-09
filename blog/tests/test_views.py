@@ -189,6 +189,10 @@ class CriarPostViewTest(TestCase):
         self.url = reverse('criar_post')
 
     def test_criar_post_view_get(self):
+        """
+        Verifica se a view responde corretamente a uma solicitação GET,
+        utilizando o template correto e incluindo o formulário no contexto.
+        """
         # Fazer login no cliente de teste
         self.client.login(username='testuser', password='12345')
         
@@ -205,6 +209,10 @@ class CriarPostViewTest(TestCase):
         self.assertIn('form', response.context)
 
     def test_criar_post_view_post(self):
+        """
+        Testa a criação de um novo post através de uma solicitação POST válida,
+        verificando se o redirecionamento ocorre e se o post é criado corretamente.
+        """
         # Fazer login no cliente de teste
         self.client.login(username='testuser', password='12345')
         
@@ -231,6 +239,10 @@ class CriarPostViewTest(TestCase):
         self.assertIsNotNone(post.publicado_em)
 
     def test_criar_post_view_post_invalid(self):
+        """
+        Testa a resposta da view a uma solicitação POST inválida, 
+        verificando se o formulário retorna com erros e se o post não é criado.
+        """
         # Fazer login no cliente de teste
         self.client.login(username='testuser', password='12345')
         
@@ -253,4 +265,70 @@ class CriarPostViewTest(TestCase):
         # Verificar se o post não foi criado
         with self.assertRaises(Post.DoesNotExist):
             Post.objects.get(titulo='Teste de Título')
+
+class EditarPostViewTest(TestCase):
+    """Test cases for the editar view."""
+
+    def setUp(self):
+        """Set up the test environment, including a test client, a test user, and a sample post."""
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.post = Post.objects.create(
+            autor=self.user,
+            titulo='Post de Teste',
+            texto='Conteúdo do post de teste',
+            publicado_em=timezone.now()
+        )
+        self.url = reverse('editar')
+
+    def test_editar_view_get(self):
+        """Test the GET request to the editar view."""
+        self.client.login(username='testuser', password='12345')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/editar.html')
+        self.assertIn('posts', response.context)
+        self.assertIn('form', response.context)
+
+    def test_editar_view_post_valid(self):
+        """Test the POST request to the editar view with valid data."""
+        self.client.login(username='testuser', password='12345')
+        data = {
+            'post_id': self.post.id,
+            'titulo': 'Post de Teste Editado',
+            'texto': 'Conteúdo do post de teste editado'
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('post_list'))
+        post = Post.objects.get(id=self.post.id)
+        self.assertEqual(post.titulo, 'Post de Teste Editado')
+        self.assertEqual(post.texto, 'Conteúdo do post de teste editado')
+        self.assertIsNotNone(post.publicado_em)
+
+    def test_editar_view_post_invalid(self):
+        """Test the POST request to the editar view with invalid data."""
+        self.client.login(username='testuser', password='12345')
+        data = {
+            'post_id': self.post.id,
+            'titulo': '',
+            'texto': ''
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/editar.html')
+        self.assertIn('posts', response.context)
+        self.assertIn('form', response.context)
+        self.assertTrue(response.context['form'].errors)
+
+    def test_editar_view_post_nonexistent_post(self):
+        """Test the POST request to the editar view with a non-existent post ID."""
+        self.client.login(username='testuser', password='12345')
+        data = {
+            'post_id': 999,  # ID that does not exist
+            'titulo': 'Post de Teste Editado',
+            'texto': 'Conteúdo do post de teste editado'
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 404)
 

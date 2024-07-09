@@ -24,7 +24,7 @@ class PostModelTests(TestCase):
         # Testa a criação de um post com QuillField
         self.assertEqual(self.post.autor.username, 'testuser')
         self.assertEqual(self.post.titulo, 'Test Post')
-        self.assertEqual(self.post.texto.html, 'Test Post')
+        self.assertEqual(self.post.texto, 'Test Post')
         self.assertIsNotNone(self.post.criado_em)
         self.assertIsNotNone(self.post.publicado_em)
 
