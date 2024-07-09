@@ -66,8 +66,8 @@
       <input type="text" class="form-control" id="titulo" name="titulo">
       <div id="editor"></div>
       <input type="hidden" name="post_id" id="post_id">
+      <input type="hidden" name="texto" id="texto">
       {% csrf_token %}
-      {{ form.as_p }}
       <div class="row">
           <div class="col-sm-9"></div>
           <div class="col-sm-3 mt-3">
@@ -104,13 +104,12 @@
               document.getElementById('post_id').value = id;
           });
       });
+      
       document.getElementById('post-form').onsubmit = function() {
         // Captura o conteúdo HTML do editor
-        const quillHtml = quill.getSemanticHTML();
-        const titulo = document.getElementById('texto').value;
+        const quillHtml = quill.root.innerHTML;
         // Define o valor do campo oculto do formulário com o HTML do Quill
-        document.querySelector('input[name="texto"]').value = quillHtml;
-        document.querySelector('input[name="titulo"]').value = titulo;
+        document.getElementById('texto').value = quillHtml;
       };
     });
 </script>

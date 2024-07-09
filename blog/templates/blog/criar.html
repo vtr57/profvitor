@@ -51,17 +51,17 @@
 
 <form id="post-form" method="post">
   <br>
-  <label for="titulo" class="form-label" >Título:</label>
-  <input type="text" class="form-control" id="titulo" required>
-<div id="editor" required></div>
-{% csrf_token %}
-{{ form.as_p }}
-<div class="row">
-  <div class="col-sm-9"></div>
-  <div class="col-sm-3 mt-3">
-    <button class="btn btn-success" type="submit" id="criar">Criar Post</button>
+  <label for="titulo" class="form-label">Título:</label>
+  <input type="text" class="form-control" id="titulo" name="titulo" required>
+  <div id="editor" required></div>
+  <input type="hidden" name="texto" id="texto">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-sm-9"></div>
+    <div class="col-sm-3 mt-3">
+      <button class="btn btn-success" type="submit" id="criar">Criar Post</button>
+    </div>
   </div>
-</div>
 </form>
 
 <!-- Initialize Quill editor -->
@@ -77,11 +77,9 @@
 
     document.getElementById('post-form').onsubmit = function() {
         // Captura o conteúdo HTML do editor
-        const quillHtml = quill.getSemanticHTML();
-        const titulo = document.getElementById('titulo').value;
+        const quillHtml = quill.root.innerHTML;
         // Define o valor do campo oculto do formulário com o HTML do Quill
-        document.querySelector('input[name="texto"]').value = quillHtml;
-        document.querySelector('input[name="titulo"]').value = titulo;
+        document.getElementById('texto').value = quillHtml;
     };
 </script>
 {%endblock%}
