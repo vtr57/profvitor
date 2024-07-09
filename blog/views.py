@@ -73,7 +73,13 @@ def editar(request):
     return render(request, 'blog/editar.html', {'posts': posts, 'form': form})
 
 
-
 @login_required
 def deletar(request):
-    return render(request, 'blog/deletar.html')
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post = get_object_or_404(Post, pk=post_id)
+        post.delete()
+        return redirect('deletar')  # Substitua pelo nome da sua view de listagem
+
+    posts = Post.objects.all()
+    return render(request, 'blog/deletar.html', {'posts': posts, 'n_posts': len(posts)})

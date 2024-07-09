@@ -2,16 +2,12 @@
 
 {% block editar %}
 <div class="container mt-3">
-  <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          Selecionar Post para Editar
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {% for post in posts %}
-              <li><a class="dropdown-item" href="#" data-id="{{ post.pk }}" data-titulo="{{ post.titulo }}" data-texto="{{ post.texto|escape }}">{{ post.titulo }}</a></li>
-          {% endfor %}
-      </ul>
-  </div>
+  <select class="form-select" id="postSelect" aria-label="Default select example">
+    <option selected disabled>Selecione o Post</option>
+    {% for post in posts %}
+        <option value="{{ post.pk }}" data-titulo="{{ post.titulo }}" data-texto="{{ post.texto|escape }}">{{ post.titulo }}</option>
+    {% endfor %}
+  </select>
 
   <div id="toolbar-container">
       <span class="ql-formats">
@@ -89,21 +85,19 @@
           theme: 'snow',
       });
 
-      // Quando um item do dropdown for clicado
-      document.querySelectorAll('.dropdown-item').forEach(function(item) {
-          item.addEventListener('click', function(event) {
-              event.preventDefault();
-              const id = this.getAttribute('data-id');
-              const titulo = this.getAttribute('data-titulo');
-              const texto = this.getAttribute('data-texto');
-              // Preenche o campo título
-              document.getElementById('titulo').value = titulo;
-              // Preenche o editor Quill
-              quill.clipboard.dangerouslyPasteHTML(texto);
-              // Define o valor do campo oculto com o ID do post
-              document.getElementById('post_id').value = id;
-          });
-      });
+    // Quando um item do dropdown for selecionado
+    document.getElementById('postSelect').addEventListener('change', function(event) {
+        const selectedOption = event.target.selectedOptions[0];
+        const id = selectedOption.value;
+        const titulo = selectedOption.getAttribute('data-titulo');
+        const texto = selectedOption.getAttribute('data-texto');
+        // Preenche o campo título
+        document.getElementById('titulo').value = titulo;
+        // Preenche o editor Quill
+        quill.clipboard.dangerouslyPasteHTML(texto);
+        // Define o valor do campo oculto com o ID do post
+        document.getElementById('post_id').value = id;
+    });
       
       document.getElementById('post-form').onsubmit = function() {
         // Captura o conteúdo HTML do editor

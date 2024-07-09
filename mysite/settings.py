@@ -162,3 +162,6 @@ QUILL_CONFIGS = {
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'painel'
 LOGOUT_REDIRECT_URL = 'login'
+
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # Permite que a página seja exibida em um iframe se for do mesmo domínio
