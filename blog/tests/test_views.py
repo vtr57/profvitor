@@ -332,3 +332,63 @@ class EditarPostViewTest(TestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 404)
 
+
+
+class DeletarPostViewTest(TestCase):
+    """Test cases for the deletar view."""
+
+    def setUp(self):
+        """Set up the test environment, including a test client, a test user, and sample posts."""
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.post1 = Post.objects.create(
+            autor=self.user,
+            titulo='Post de Teste 1',
+            texto='Conteúdo do post de teste 1',
+            publicado_em=timezone.now()
+        )
+        self.post2 = Post.objects.create(
+            autor=self.user,
+            titulo='Post de Teste 2',
+            texto='Conteúdo do post de teste 2',
+            publicado_em=timezone.now()
+        )
+        self.url = reverse('deletar')
+
+    def test_deletar_view_get(self):
+        """Test the GET request to the deletar view."""
+        self.client.login(username='testuser', password='12345')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/deletar.html')
+        self.assertIn('posts', response.context)
+        self.assertIn('n_posts', response.context)
+        self.assertEqual(len(response.context['posts']), 2)
+        self.assertEqual(response.context['n_posts'], 2)
+
+    def test_deletar_view_post_valid(self):
+        """Test the POST request to the deletar view with valid data."""
+        self.client.login(username='testuser', password='12345')
+        data = {
+            'post_id': self.post1.id
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.url)
+        with self.assertRaises(Post.DoesNotExist):
+            Post.objects.get(id=self.post1.id)
+        remaining_posts = Post.objects.all()
+        self.assertEqual(len(remaining_posts), 1)
+        self.assertEqual(remaining_posts[0].titulo, 'Post de Teste 2')
+
+    def test_deletar_view_post_invalid(self):
+        """Test the POST request to the deletar view with an invalid post ID."""
+        self.client.login(username='testuser', password='12345')
+        data = {
+            'post_id': 999  # ID that does not exist
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 404)
+        remaining_posts = Post.objects.all()
+        self.assertEqual(len(remaining_posts), 2)
+
