@@ -175,3 +175,82 @@ class AuthViewsTest(TestCase):
         response = self.client.get(reverse('logout'))
         self.assertRedirects(response, reverse('login'))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+class CriarPostViewTest(TestCase):
+
+    def setUp(self):
+        # Configurar um cliente de teste
+        self.client = Client()
+        
+        # Criar um usuário para autenticar
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        
+        # URL para a view de criação de post
+        self.url = reverse('criar_post')
+
+    def test_criar_post_view_get(self):
+        # Fazer login no cliente de teste
+        self.client.login(username='testuser', password='12345')
+        
+        # Fazer uma solicitação GET
+        response = self.client.get(self.url)
+        
+        # Verificar se a resposta é 200 OK
+        self.assertEqual(response.status_code, 200)
+        
+        # Verificar se o template correto foi usado
+        self.assertTemplateUsed(response, 'blog/criar.html')
+        
+        # Verificar se o formulário está presente no contexto
+        self.assertIn('form', response.context)
+
+    def test_criar_post_view_post(self):
+        # Fazer login no cliente de teste
+        self.client.login(username='testuser', password='12345')
+        
+        # Dados para enviar no formulário
+        data = {
+            'titulo': 'Teste de Título',
+            'texto': 'Conteúdo do post de teste'
+        }
+        
+        # Fazer uma solicitação POST
+        response = self.client.post(self.url, data)
+        
+        # Verificar se houve redirecionamento após a criação do post
+        self.assertEqual(response.status_code, 302)
+        
+        # Verificar se o redirecionamento foi para a lista de posts
+        self.assertRedirects(response, reverse('post_list'))
+        
+        # Verificar se o post foi criado
+        post = Post.objects.get(titulo='Teste de Título')
+        self.assertIsNotNone(post)
+        self.assertEqual(post.texto, 'Conteúdo do post de teste')
+        self.assertEqual(post.autor, self.user)
+        self.assertIsNotNone(post.publicado_em)
+
+    def test_criar_post_view_post_invalid(self):
+        # Fazer login no cliente de teste
+        self.client.login(username='testuser', password='12345')
+        
+        # Dados inválidos (campo 'texto' vazio)
+        data = {
+            'titulo': 'Teste de Título',
+            'texto': ''
+        }
+        
+        # Fazer uma solicitação POST
+        response = self.client.post(self.url, data)
+        
+        # Verificar se a resposta é 200 OK (sem redirecionamento)
+        self.assertEqual(response.status_code, 200)
+        
+        # Verificar se o formulário está presente no contexto com erros
+        self.assertIn('form', response.context)
+        self.assertTrue(response.context['form'].errors)
+        
+        # Verificar se o post não foi criado
+        with self.assertRaises(Post.DoesNotExist):
+            Post.objects.get(titulo='Teste de Título')
+
