@@ -15,3 +15,18 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return self.titulo
+    
+class Vestibular(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.nome
+
+class Questao(models.Model):
+    conteudo = models.TextField()
+    ano = models.DateField()
+    resposta = models.TextField()
+    vestibular = models.ForeignKey(Vestibular, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.conteudo
