@@ -165,3 +165,8 @@ LOGOUT_REDIRECT_URL = 'login'
 
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'  # Permite que a página seja exibida em um iframe se for do mesmo domínio
+
+
+# media files
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

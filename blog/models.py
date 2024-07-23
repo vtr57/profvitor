@@ -21,12 +21,21 @@ class Vestibular(models.Model):
 
     def __str__(self) -> str:
         return self.nome
+    
+class Tema(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.nome
 
 class Questao(models.Model):
     conteudo = models.TextField()
-    ano = models.DateField()
+    ano = models.CharField(max_length=4)
     resposta = models.TextField()
     vestibular = models.ForeignKey(Vestibular, on_delete=models.CASCADE)
+    tema = models.ForeignKey(Tema, on_delete=models.CASCADE)
+    imagem = models.ImageField(upload_to='img/questao/', blank=True, null=True)
+
 
     def __str__(self) -> str:
         return self.conteudo
