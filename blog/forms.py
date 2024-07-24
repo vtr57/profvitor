@@ -10,4 +10,4 @@ class PostForm(forms.ModelForm):
 class QuestaoForm(forms.ModelForm):
     class Meta:
         model = Questao
-        fields = ("conteudo", "ano", "resposta", "vestibular", "tema", "imagem", )
+        fields = ("enunciado", "imagem", "alternativas", "ano", "resposta", "vestibular", "tema", )

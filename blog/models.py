@@ -29,13 +29,14 @@ class Tema(models.Model):
         return self.nome
 
 class Questao(models.Model):
-    conteudo = models.TextField()
+    enunciado = models.TextField()
+    imagem = models.ImageField(upload_to='img/questao/', blank=True, null=True)
+    alternativas = models.TextField()
     ano = models.CharField(max_length=4)
     resposta = models.TextField()
     vestibular = models.ForeignKey(Vestibular, on_delete=models.CASCADE)
     tema = models.ForeignKey(Tema, on_delete=models.CASCADE)
-    imagem = models.ImageField(upload_to='img/questao/', blank=True, null=True)
 
 
     def __str__(self) -> str:
-        return self.conteudo
+        return self.enunciado               
